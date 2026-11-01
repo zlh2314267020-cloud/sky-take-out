@@ -31,4 +31,6 @@ public interface EmployeeMapper {
 
   //根据主键动态修改属性
     void update(Employee employee);
+@Select("select * from sky_take_out.employee where id=#{id}")
+    Employee getByid(long id);
 }
