@@ -76,4 +76,14 @@ public class DishController {
     List<Dish> list= setmealService.getBycategoryIdWithDish(categoryId);
     return Result.success(list);
     }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用或禁用菜品")
+    public Result startOrStop(
+            @PathVariable Integer status,
+            @RequestParam Long id) {
+        log.info("启用或禁用菜品：status={}, id={}", status, id);
+        dishService.startOrStop(status, id);
+        return Result.success();
+    }
 }

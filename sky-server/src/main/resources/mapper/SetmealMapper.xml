@@ -19,6 +19,48 @@
         </foreach>
 
     </insert>
+    <update id="update">
+        update sky_take_out.setmeal
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+            <if test="image != null and image != ''">
+                image = #{image},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <delete id="deleteSetmeal">
+        delete from sky_take_out.setmeal where id in
+        <foreach collection="ids"  open="(" close=")" separator="," item="id" >
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteSetmeal_dish">
+        delete from sky_take_out.setmeal_dish where setmeal_id in
+        <foreach collection="ids" open="(" close=")" separator="," item="setmeal_id">
+            #{setmeal_id}
+        </foreach>
+    </delete>
     <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
         select s.*,c.`name` AS CategoryName FROM sky_take_out.setmeal s LEFT JOIN  sky_take_out.category c on s.category_id=c.id
         <where>
@@ -34,4 +76,19 @@
         </where>
 
     </select>
+    <select id="list" parameterType="Setmeal" resultType="Setmeal">
+        select * from setmeal
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
 </mapper>
