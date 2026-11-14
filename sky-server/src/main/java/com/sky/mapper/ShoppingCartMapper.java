@@ -22,4 +22,8 @@ public interface ShoppingCartMapper {
     //根据用户id清空购物车
     @Delete("delete from sky_take_out.shopping_cart where user_id=#{userId}")
     void deleteByuserId(Long userId);
+    //根据动态条件删除一条购物车数据
+    void sub(ShoppingCart shoppingCart);
+
+    void updateNumeberByAll(ShoppingCart shoppingCart);
 }

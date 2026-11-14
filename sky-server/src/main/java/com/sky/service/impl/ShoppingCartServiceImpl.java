@@ -91,11 +91,40 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void sub(ShoppingCartDTO shoppingCartDTO) {
         //判断当前要删除的是菜品信息还是套餐信息
+        ShoppingCart shoppingCart= new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO,shoppingCart);
+        Long userId = BaseContext.getCurrentId();
+        shoppingCart.setUserId(userId);
+        List<ShoppingCart> cartList = shoppingCartMapper.list(shoppingCart);
+        shoppingCart=cartList.get(0);
+        if (shoppingCart.getDishId()!=null&&shoppingCart.getDishId()>0){
+            //菜品信息 ，查看是否数量>1
+            Integer number = shoppingCart.getNumber();
 
-        //菜品信息 ，查看是否数量>1
+            if (number>1){
+                //如果大于1 ，直接number数量减一
+                shoppingCart.setNumber(number-1);
+                shoppingCartMapper.updateNumeberByAll(shoppingCart);
+            }else if (number==1){
+                //如果等于一，直接调用mapper中定义的删除，假设为sub
+                shoppingCartMapper.sub(shoppingCart);
+            }
+        }
+       else {
+           if (shoppingCart.getSetmealId() != null &&shoppingCart.getSetmealId()>0){
+               //如果为套餐信息，查看数量是否大于1，上同
+               Integer number = shoppingCart.getNumber();
+               if (number>1){
+                   //如果大于1 ，直接number数量减一
+                   shoppingCart.setNumber(number-1);
+                   shoppingCartMapper.updateNumeberByAll(shoppingCart);
+               }else if (number==1){
+                   //如果等于一，直接调用mapper中定义的删除，假设为sub
+                   shoppingCartMapper.sub(shoppingCart);
+               }
+        }
+        }
 
-        //如果大于1 ，直接number数量减一
 
-        //如果等于一，直接调用mapper中定义的删除
     }
 }
