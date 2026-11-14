@@ -61,11 +61,11 @@ public class SetmealController {
         setmealService.StartorStop(status,id);
         return Result.success();
     }
-  //根据id查询菜品信息
+  //根据id查询套餐信息
     @GetMapping("/{id}")
-    @ApiOperation("根据id查询菜品")
+    @ApiOperation("根据id查询套餐")
     public Result<SetmealVO> select(@PathVariable Long id){
-        log.info("根据id查询：{}",id);
+        log.info("根据id查询套餐：{}",id);
         SetmealVO setmealVO = setmealService.selectSetmealWithCategoryName(id);
         return Result.success(setmealVO);
     }
