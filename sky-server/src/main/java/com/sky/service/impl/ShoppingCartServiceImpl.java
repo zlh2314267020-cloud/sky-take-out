@@ -81,4 +81,21 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
         return  list;
     }
+    //清空购物车
+    public void cleanShopping() {
+        Long userId = BaseContext.getCurrentId();
+        shoppingCartMapper.deleteByuserId(userId);
+    }
+    //删除一条信息
+
+    @Override
+    public void sub(ShoppingCartDTO shoppingCartDTO) {
+        //判断当前要删除的是菜品信息还是套餐信息
+
+        //菜品信息 ，查看是否数量>1
+
+        //如果大于1 ，直接number数量减一
+
+        //如果等于一，直接调用mapper中定义的删除
+    }
 }
