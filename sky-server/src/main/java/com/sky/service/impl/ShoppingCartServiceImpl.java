@@ -96,7 +96,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Long userId = BaseContext.getCurrentId();
         shoppingCart.setUserId(userId);
         List<ShoppingCart> cartList = shoppingCartMapper.list(shoppingCart);
-        shoppingCart=cartList.get(0);
         if (shoppingCart.getDishId()!=null&&shoppingCart.getDishId()>0){
             //菜品信息 ，查看是否数量>1
             Integer number = shoppingCart.getNumber();
