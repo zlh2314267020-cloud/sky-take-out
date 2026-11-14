@@ -141,7 +141,7 @@ public class DishServiceimpl implements DishService {
      * @return
      */
     public List<DishVO> listWithFlavor(Dish dish) {
-        List<Dish> dishList = dishMapper.list(dish);
+        List<Dish> dishList = dishMapper.list(dish);//读取dish的所有数据
 
         List<DishVO> dishVOList = new ArrayList<>();
 
