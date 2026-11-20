@@ -9,4 +9,5 @@ import java.util.List;
 public interface OrderDetailMapper {
     //批量插入订单明细数据
     void insertBatch(List<OrderDetail> orderDetailList);
+
 }

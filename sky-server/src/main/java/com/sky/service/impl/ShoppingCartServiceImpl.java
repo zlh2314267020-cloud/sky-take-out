@@ -13,6 +13,7 @@ import com.sky.service.ShoppingCartService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,7 +39,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if(list!=null&&list.size()>0){
             ShoppingCart cart = list.get(0);
             cart.setNumber(cart.getNumber()+1);
-            shoppingCartMapper.updateNumeberById(cart);
+            shoppingCartMapper.updateNumberById(cart);
         }else{
             //如果不存在，需要插入一条购物车数据
 
@@ -89,41 +90,27 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     //删除一条信息
 
     @Override
+    @Transactional
     public void sub(ShoppingCartDTO shoppingCartDTO) {
-        //判断当前要删除的是菜品信息还是套餐信息
-        ShoppingCart shoppingCart= new ShoppingCart();
-        BeanUtils.copyProperties(shoppingCartDTO,shoppingCart);
+        ShoppingCart shoppingCart = new ShoppingCart();
+        BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
         Long userId = BaseContext.getCurrentId();
         shoppingCart.setUserId(userId);
+
+        // 根据菜品/套餐、口味和当前用户查询真实购物车记录
         List<ShoppingCart> cartList = shoppingCartMapper.list(shoppingCart);
-        if (shoppingCart.getDishId()!=null&&shoppingCart.getDishId()>0){
-            //菜品信息 ，查看是否数量>1
-            Integer number = shoppingCart.getNumber();
-
-            if (number>1){
-                //如果大于1 ，直接number数量减一
-                shoppingCart.setNumber(number-1);
-                shoppingCartMapper.updateNumeberByAll(shoppingCart);
-            }else if (number==1){
-                //如果等于一，直接调用mapper中定义的删除，假设为sub
-                shoppingCartMapper.sub(shoppingCart);
-            }
-        }
-       else {
-           if (shoppingCart.getSetmealId() != null &&shoppingCart.getSetmealId()>0){
-               //如果为套餐信息，查看数量是否大于1，上同
-               Integer number = shoppingCart.getNumber();
-               if (number>1){
-                   //如果大于1 ，直接number数量减一
-                   shoppingCart.setNumber(number-1);
-                   shoppingCartMapper.updateNumeberByAll(shoppingCart);
-               }else if (number==1){
-                   //如果等于一，直接调用mapper中定义的删除，假设为sub
-                   shoppingCartMapper.sub(shoppingCart);
-               }
-        }
+        if (cartList == null || cartList.isEmpty()) {
+            return;
         }
 
+        ShoppingCart cart = cartList.get(0);
+        int number = cart.getNumber() == null ? 0 : cart.getNumber();
 
+        if (number > 1) {
+            cart.setNumber(number - 1);
+            shoppingCartMapper.updateNumberById(cart);
+        } else {
+            shoppingCartMapper.deleteById(cart);
+        }
     }
 }
